@@ -1,6 +1,5 @@
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import NavegacionDesktop from "../Shared/NavegacionDesktop";
 import Swal from "sweetalert2";
 
 function ContactComponent() {
@@ -52,26 +51,12 @@ function ContactComponent() {
 	};
 
 	return (
-		<div className="relative h-screen bg-[#F7F3E4] text-white flex items-center justify-center">
+		<div className="relative bg-[#F7F3E4] text-white flex items-center justify-center">
 			{/* Contenedor Principal */}
-			<div className="relative lg:w-full bg-black shadow-lg  overflow-hidden">
-				{/* Navbar */}
-				<header className="absolute top-0 left-0 right-0 flex items-center justify-between p-6 z-10">
-					<div className="flex items-center ">
-						{/* <div className="w-[250px] h-[80px] bg-[#F7F3E4] flex items-center justify-center rounded-xl ">
-							<img
-								src="/imgs/logo-cafeteria.png"
-								alt="Logo"
-								className="w-[150px] h-[50px]"
-							/>
-						</div> */}
-					</div>
-					<NavegacionDesktop />
-				</header>
-
+			<div className="relative lg:w-full bg-black shadow-lg overflow-hidden">
 				{/* Contenido Principal */}
 				<div
-					className="relative flex flex-col lg:flex-row items-center justify-center lg:justify-start p-24 bg-cover bg-center  h-screen w-full mx-auto"
+					className="relative flex flex-col lg:flex-row items-center justify-center lg:justify-start p-6 lg:p-24 bg-cover bg-center  h-screen w-full mx-auto"
 					style={{ backgroundImage: "url('/imgs/02 2.png')" }}
 				>
 					{/* Overlay */}

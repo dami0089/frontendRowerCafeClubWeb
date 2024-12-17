@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import Header from "../Shared/Header";
 
 import LetreroRedondoCafecito from "../ui/letreroRedondoCafecito";
 
@@ -20,17 +19,15 @@ function Menu2() {
 				backgroundRepeat: "no-repeat",
 			}}
 		>
-			{/* Navbar */}
-			<Header />
 			{/* Contenido principal */}
-			<div className="flex flex-col lg:flex-row w-full mt-16 max-w-screen-xl mx-auto items-center justify-between px-8 lg:px-16 py-10 lg:py-20 relative">
+			<div className="flex flex-col lg:flex-row w-full mt-16 max-w-screen-xl mx-auto items-center justify-between px-8 lg:px-16 py-10 lg:py-40 relative">
 				{/* Sección Derecha */}
-				<div className="lg:w-3/3 relative mt-10 lg:mt-0">
+				<div className="lg:w-3/3 relative md:mt-5 lg:mt-0">
 					<div className="relative overflow-hidden rounded-br-[80px] rounded-tl-[80px] shadow-lg">
 						<img
 							src="/imgs/Captura de pantalla 2024-11-25 a la(s) 5.20.11 p. m..png"
 							alt="Cafetería"
-							className="object-cover w-full h-[400px] lg:h-[500px]"
+							className="object-cover w-full md:h-[1500px] lg:h-[500px]"
 						/>
 					</div>
 
@@ -40,9 +37,9 @@ function Menu2() {
 				</div>
 
 				{/* Sección Izquierda */}
-				<div className="lg:w-1/2 space-y-6 relative z-10 ml-16">
-					<div className="flex justify-between">
-						<h3 className="text-4xl font-bold text-black leading-tight mt-8">
+				<div className="lg:w-1/2 space-y-6 relative z-10 lg:ml-16">
+					<div className="flex justify-between items-center">
+						<h3 className="text-4xl font-bold text-black leading-tight ">
 							Café de <span className="block">especialidad.</span>
 						</h3>
 						<div className="h-28 w-28">
@@ -50,7 +47,7 @@ function Menu2() {
 						</div>
 					</div>
 
-					<p className="text-lg text-gray-800 leading-relaxed">
+					<p className="lg:text-lg text-gray-800 leading-relaxed">
 						En ROWER CAFE CLUB, entendemos que al igual que el ciclismo, la
 						preparacion del cafe es{" "}
 						<span className="font-bold">
@@ -64,7 +61,7 @@ function Menu2() {
 						</span>
 					</p>
 					<hr className="border-gray-400 w-16" />
-					<p className="text-sm text-gray-600 leading-relaxed">
+					<p className="hidden md:block text-sm text-gray-600 leading-relaxed">
 						El ambiente de nuestra cafetería refleja el dinamismo del ciclicsmo,
 						con decoracion temática, librería y productos de exhibicion; siendo
 						<span className="font-bold">

@@ -21,6 +21,10 @@ export default function FeaturedProducts() {
 
 	const agregarAlCarrito = async (e, producto) => {
 		e.preventDefault();
+		if (producto.tieneVariantes) {
+			navigate(`/producto/${producto.nombre}/${producto.id}`);
+			return;
+		}
 		await addToCart(producto);
 		handleCartDrawer();
 	};
@@ -45,7 +49,7 @@ export default function FeaturedProducts() {
 						<img
 							src={product.imagen}
 							alt={product.nombre}
-							className="w-full h-48 object-cover"
+							className="w-full h-48 object-contain"
 						/>
 
 						<div className="p-4 flex flex-col flex-grow justify-between">

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Modal from "react-modal";
 import useProductos from "../../../../hooks/useProductos";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 Modal.setAppElement("#root"); // Configura el elemento raíz del modal para accesibilidad
 
@@ -19,7 +20,7 @@ export default function CartDrawer() {
 
 	// Calcular subtotal y total con descuentos
 	const subtotal = cart.reduce(
-		(total, item) => total + item.precio * (item.quantity || 1),
+		(total, item) => total + item.precio * (item.cantidad || 1),
 		0
 	);
 	const discountAmount = 0; // Esto se puede actualizar según se aplique un descuento
@@ -28,7 +29,7 @@ export default function CartDrawer() {
 	// Actualizar la cantidad de un producto en el carrito
 	const updateQuantity = (productId, quantity) => {
 		const updatedCart = cart.map((item) =>
-			item._id === productId ? { ...item, quantity } : item
+			item._id === productId ? { ...item, cantidad: quantity } : item
 		);
 		setCart(updatedCart);
 		localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -50,6 +51,14 @@ export default function CartDrawer() {
 
 	const navigateCarrito = () => {
 		handleCartDrawer();
+		if (cart.length === 0) {
+			Swal.fire({
+				icon: "error",
+				title: "Carrito Vacío",
+				text: "No puedes finalizar el pedido si tu carrito está vacío.",
+			});
+			return;
+		}
 		navigate("/carrito");
 	};
 
@@ -74,7 +83,7 @@ export default function CartDrawer() {
 				{cart.length > 0 ? (
 					cart.map((item) => (
 						<div
-							key={item._id}
+							key={`${item._id}-${item.variante?._id || "default"}`}
 							className="flex items-center justify-between border-b pb-4"
 						>
 							<div className="flex items-center space-x-4">
@@ -85,9 +94,11 @@ export default function CartDrawer() {
 								/>
 								<div>
 									<h3 className="text-sm font-semibold">{item.nombre}</h3>
-									{item.precioOriginal && (
-										<p className="text-gray-500 text-sm line-through">
-											${item.precioOriginal}
+									{/* Variantes */}
+									{item.variante && (
+										<p className="text-gray-500 text-sm">
+											Talle: <strong>{item.variante.talle}</strong>, Color:{" "}
+											<strong>{item.variante.color}</strong>
 										</p>
 									)}
 									<p className="text-lg font-bold">${item.precio}</p>
@@ -95,7 +106,7 @@ export default function CartDrawer() {
 							</div>
 							<div className="flex items-center space-x-2">
 								<select
-									value={item.quantity || 1}
+									value={item.cantidad || 1}
 									onChange={(e) =>
 										updateQuantity(item._id, parseInt(e.target.value))
 									}

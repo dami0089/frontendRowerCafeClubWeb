@@ -160,6 +160,12 @@ export default function CartPage() {
 											/>
 											<div>
 												<h3 className="text-lg font-semibold">{item.nombre}</h3>
+												{item.variante && (
+													<p className="text-gray-500 text-sm">
+														Talle: <strong>{item.variante.talle}</strong>,
+														Color: <strong>{item.variante.color}</strong>
+													</p>
+												)}
 												{item.precioOriginal && (
 													<p className="text-gray-500 line-through">
 														${item.precioOriginal}
@@ -211,7 +217,7 @@ export default function CartPage() {
 
 					{/* Resumen del Pedido */}
 					<div className="bg-gray-50 h-max p-6 shadow-md rounded-lg space-y-4">
-						<div className="space-y-2">
+						{/* <div className="space-y-2">
 							<input
 								type="text"
 								placeholder="Código de descuento"
@@ -225,7 +231,7 @@ export default function CartPage() {
 							>
 								Añadir
 							</button>
-						</div>
+						</div> */}
 						<div className="space-y-2">
 							<div className="flex justify-between">
 								<span>Subtotal:</span>

@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"; // Para query params
 import useProductos from "../../../../hooks/useProductos";
 import useAuth from "../../../../hooks/useAuth";
 import Cargando from "../../../Shared/Cargando";
-import Footer from "../Home/Footer";
 import CartDrawer from "../Carrito/CartDrawer";
 
 const productsPerPage = 8;
 
 export default function CategorySection() {
 	const [currentPage, setCurrentPage] = useState(1);
+	const [filteredProducts, setFilteredProducts] = useState([]);
+	const [searchParams] = useSearchParams();
 	const cate = useParams();
+	const subCategoriaParam = searchParams.get("subCategoria"); // Obtenemos la subcategoría del query param
 	const {
 		productos,
 		obtenerProductosCategoria,
@@ -30,18 +32,27 @@ export default function CategorySection() {
 		obtenerData();
 	}, [cate]);
 
-	// Cálculo de los productos a mostrar en la página actual
+	useEffect(() => {
+		// Filtrar por subcategoría si está activa
+		if (subCategoriaParam) {
+			const filtrados = productos.filter(
+				(prod) => prod.subCategoria === subCategoriaParam
+			);
+			setFilteredProducts(filtrados);
+		} else {
+			setFilteredProducts(productos); // Sin filtro, mostrar todos los productos
+		}
+	}, [productos, subCategoriaParam]);
+
 	const indexOfLastProduct = currentPage * productsPerPage;
 	const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-	const currentProducts = productos.slice(
+	const currentProducts = filteredProducts.slice(
 		indexOfFirstProduct,
 		indexOfLastProduct
 	);
 
-	// Total de páginas
-	const totalPages = Math.ceil(productos.length / productsPerPage);
+	const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
-	// Función para cambiar de página
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 	const handleVerProducto = (id, nombre) => {
@@ -49,20 +60,23 @@ export default function CategorySection() {
 	};
 
 	const agregarAlCarrito = async (producto) => {
+		if (producto.tieneVariantes) {
+			navigate(`/producto/${producto.nombre}/${producto.id}`);
+			return;
+		}
 		await addToCart(producto);
 		handleCartDrawer();
 	};
 
 	return (
 		<>
-			<div className="py-16 px-6">
+			<div className="mt-4">
 				<h2 className="text-4xl font-bold text-center mb-12 uppercase">
 					{cate.nombre}
 				</h2>
 
 				{currentProducts.length > 0 ? (
 					<>
-						{/* Grid de Productos */}
 						<div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
 							{currentProducts.map((product) => (
 								<div
@@ -73,16 +87,13 @@ export default function CategorySection() {
 									<img
 										src={product.imagen}
 										alt={product.nombre}
-										className="w-full h-48 object-cover"
+										className="w-full h-48 object-contain"
 									/>
 
 									<div className="p-4 flex flex-col flex-grow justify-between">
-										{/* Nombre del producto en la parte superior */}
 										<h3 className="text-xl font-semibold mb-2">
 											{product.nombre}
 										</h3>
-
-										{/* Contenedor del precio y el botón al final */}
 										<div>
 											<p className="text-gray-700 mb-4 text-2xl text-right font-bold">
 												${product.precio}
@@ -90,7 +101,7 @@ export default function CategorySection() {
 											<button
 												className="w-full px-4 py-2 bg-[#90C9CF] text-white font-bold rounded-lg hover:bg-[#7aaeb4]"
 												onClick={(e) => {
-													e.stopPropagation(); // Evita que el clic se propague al contenedor padre
+													e.stopPropagation();
 													agregarAlCarrito(product);
 												}}
 											>
@@ -102,8 +113,7 @@ export default function CategorySection() {
 							))}
 						</div>
 
-						{/* Paginación */}
-						<div className="flex justify-center mt-8 space-x-4">
+						<div className="flex justify-center mt-8 space-x-4 mb-12">
 							{Array.from({ length: totalPages }, (_, index) => (
 								<button
 									key={index + 1}
@@ -120,14 +130,11 @@ export default function CategorySection() {
 						</div>
 					</>
 				) : (
-					<h1 className="text-center text-gray-300">
-						No ha productos en esta seccion
-					</h1>
+					<h1 className="text-center text-gray-300">No hay productos</h1>
 				)}
 
 				<Cargando />
 			</div>
-			<Footer />
 			{cartDrawer ? <CartDrawer /> : null}
 		</>
 	);

@@ -90,6 +90,7 @@ const ProductosProvider = ({ children }) => {
 			const { data } = await clienteAxios(
 				`/categorias/obtener-categorias-tienda`
 			);
+			console.log(data);
 
 			setCategorias(data);
 		} catch (error) {
@@ -98,40 +99,29 @@ const ProductosProvider = ({ children }) => {
 	};
 
 	const addToCart = async (product) => {
-		if (!auth.isAuthenticated) {
-			setCart((prevCart) => {
-				const existingProductIndex = prevCart.findIndex(
-					(item) => item._id === product._id
-				);
+		setCart((prevCart) => {
+			// Verificar si ya existe el producto con la misma variante en el carrito
+			const existingProductIndex = prevCart.findIndex(
+				(item) =>
+					item._id === product._id &&
+					(item.variante?._id === product.variante?._id || !product.variante)
+			);
 
-				let updatedCart;
+			let updatedCart;
 
-				if (existingProductIndex !== -1) {
-					// Producto ya existe, incrementa la cantidad
-					updatedCart = [...prevCart];
-					updatedCart[existingProductIndex].quantity =
-						(updatedCart[existingProductIndex].quantity || 1) + 1;
-				} else {
-					// Producto no existe, agregarlo al carrito
-					updatedCart = [...prevCart, { ...product, quantity: 1 }];
-				}
-
-				// Guardar el carrito actualizado en localStorage
-				localStorage.setItem("cart", JSON.stringify(updatedCart));
-				return updatedCart;
-			});
-		} else {
-			// Usuario autenticado: guardar en el backend
-			try {
-				await clienteAxios.post("TU_ENDPOINT_DEL_CARRITO", {
-					userId: auth.user._id,
-					productId: product._id,
-					quantity: 1, // Ajusta la cantidad según tus necesidades
-				});
-			} catch (error) {
-				console.error("Error al agregar al carrito:", error);
+			if (existingProductIndex !== -1) {
+				// Producto con misma variante ya existe, incrementar la cantidad
+				updatedCart = [...prevCart];
+				updatedCart[existingProductIndex].cantidad += product.cantidad || 1;
+			} else {
+				// Producto no existe o tiene una variante diferente, agregarlo al carrito
+				updatedCart = [...prevCart, { ...product }];
 			}
-		}
+
+			// Guardar el carrito actualizado en localStorage
+			localStorage.setItem("cart", JSON.stringify(updatedCart));
+			return updatedCart;
+		});
 	};
 
 	const [productosDestacados, setProductosDestacados] = useState([]);
@@ -154,6 +144,7 @@ const ProductosProvider = ({ children }) => {
 	const obtenerProducto = async (id) => {
 		try {
 			const { data } = await clienteAxios(`/productos/obtener-producto/${id}`);
+			console.log(data);
 
 			setProducto(data);
 		} catch (error) {

@@ -39,6 +39,10 @@ export default function ShareSection() {
 	};
 
 	const agregarAlCarrito = async (producto) => {
+		if (producto.tieneVariantes) {
+			navigate(`/producto/${producto.nombre}/${producto.id}`);
+			return;
+		}
 		await addToCart(producto);
 		handleCartDrawer();
 	};
